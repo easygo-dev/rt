@@ -12,7 +12,7 @@ read -p "Enter new rpc_url: " rpc_url
 read -p "Enter new batch_size: " batch_size
 read -p "Enter new private_key (without 0x prefix): " private_key
 read -p "Enter new registry_address: " registry_address
-read -p "Enter new Docker version (e.g., 1.2.0): " docker_version
+read -p "Enter new infernet-node version (e.g., 1.2.0): " node_version
 
 # Add "0x" prefix to private_key
 private_key="0x$private_key"
@@ -57,7 +57,7 @@ echo "Changes applied to Makefile."
 
 # 3. Edit docker-compose.yaml
 echo "Editing docker-compose.yaml: $DOCKER_COMPOSE"
-sed -i "s|image: ritualnetwork/infernet-node:.*|image: ritualnetwork/infernet-node:$docker_version|g" "$DOCKER_COMPOSE"
+sed -i "s|image: ritualnetwork/infernet-node:.*|image: ritualnetwork/infernet-node:$node_version|g" "$DOCKER_COMPOSE"
 echo "Changes applied to docker-compose.yaml."
 
 echo "All changes have been successfully applied to all files."
