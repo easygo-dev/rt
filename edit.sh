@@ -26,7 +26,7 @@ edit_file () {
   sed -i "s|\"rpc_url\": \".*\"|\"rpc_url\": \"$rpc_url\"|g" "$file"
 
   # Replace batch_size
-  sed -i "s|\"batch_size\": [0-9]*|\"batch_size\": $batch_size|g" "$file"
+  sed -i "s|\"batch_size\": [0-9]*|\"batch_size\": $batch_size,|g" "$file"  # Add a comma at the end of the batch_size line
 
   # Replace private_key
   sed -i "s|\"private_key\": \".*\"|\"private_key\": \"$private_key\"|g" "$file"
@@ -35,7 +35,7 @@ edit_file () {
   sed -i "s|\"registry_address\": \".*\"|\"registry_address\": \"$registry_address\"|g" "$file"
 
   # Add "starting_sub_id": 100000 to the "snapshot_sync" block
-  sed -i '/"batch_size": '"$batch_size"'/a \        "starting_sub_id": 100000' "$file"
+  sed -i '/"batch_size": '"$batch_size"',/a \        "starting_sub_id": 100000' "$file"  # Insert after the batch_size line with the comma
 
   echo "Changes applied to $file."
 }
