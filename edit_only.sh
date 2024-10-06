@@ -21,9 +21,6 @@ edit_config_files () {
   sed -i "s|\"batch_size\": [0-9]*,|\"batch_size\": $batch_size|g" "$file"
   sed -i "s|\"batch_size\": [0-9]*|\"batch_size\": $batch_size|g" "$file"
 
-  # Ensure there is no duplicate or additional "starting_sub_id"
-  sed -i '/"starting_sub_id": 100000/d' "$file"
-
   echo "Changes applied to $file."
 }
 
