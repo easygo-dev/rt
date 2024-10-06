@@ -17,11 +17,12 @@ edit_config_files () {
   # Replace rpc_url
   sed -i "s|\"rpc_url\": \".*\"|\"rpc_url\": \"$rpc_url\"|g" "$file"
 
-  # Replace batch_size and ensure proper formatting with comma
-  sed -i "s|\"batch_size\": [0-9]*|\"batch_size\": $batch_size,|g" "$file"
+  # Replace batch_size and ensure proper formatting (remove trailing comma if exists)
+  sed -i "s|\"batch_size\": [0-9]*,|\"batch_size\": $batch_size|g" "$file"
+  sed -i "s|\"batch_size\": [0-9]*|\"batch_size\": $batch_size|g" "$file"
 
-  # Add "starting_sub_id": 100000 to the "snapshot_sync" block
-  sed -i '/"batch_size": '"$batch_size"',/a \        "starting_sub_id": 100000' "$file"  # Insert after the batch_size line with the comma
+  # Ensure there is no duplicate or additional "starting_sub_id"
+  sed -i '/"starting_sub_id": 100000/d' "$file"
 
   echo "Changes applied to $file."
 }
@@ -45,3 +46,4 @@ edit_config_files "$CONFIG_FILE2"
 edit_makefile "$MAKEFILE"
 
 echo "All changes have been successfully applied."
+
