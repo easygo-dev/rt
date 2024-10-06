@@ -17,8 +17,7 @@ edit_config_files () {
   # Replace rpc_url
   sed -i "s|\"rpc_url\": \".*\"|\"rpc_url\": \"$rpc_url\"|g" "$file"
 
-  # Replace batch_size and ensure proper formatting (remove trailing comma if exists)
-  sed -i "s|\"batch_size\": [0-9]*,|\"batch_size\": $batch_size|g" "$file"
+  # Replace batch_size without touching the rest of the structure
   sed -i "s|\"batch_size\": [0-9]*|\"batch_size\": $batch_size|g" "$file"
 
   echo "Changes applied to $file."
@@ -43,4 +42,5 @@ edit_config_files "$CONFIG_FILE2"
 edit_makefile "$MAKEFILE"
 
 echo "All changes have been successfully applied."
+
 
