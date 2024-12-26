@@ -12,7 +12,7 @@ edit_config_file() {
   # Удаление старого блока "snapshot_sync"
   sed -i '/"snapshot_sync": {/,/}/d' "$file"
 
-  # Вставка нового блока "snapshot_sync" перед закрывающей фигурной скобкой объекта "chain"
+  # Корректная вставка блока "snapshot_sync" перед закрывающей фигурной скобкой объекта "chain"
   awk '
     BEGIN { inside_chain = 0 }
     /"chain": {/ { inside_chain = 1 }
