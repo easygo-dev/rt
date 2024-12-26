@@ -12,8 +12,10 @@ edit_config_file() {
   # Удаление старого блока "snapshot_sync"
   sed -i '/"snapshot_sync": {/,/}/d' "$file"
 
-  # Добавление нового блока "snapshot_sync" с сохранением структуры
-  sed -i "/\"chain\": {/a\        \"snapshot_sync\": {\n          \"sleep\": 1.5,\n          \"batch_size\": 10000,\n          \"starting_sub_id\": 0,\n          \"sync_period\": 1\n        }," "$file"
+  # Вставка нового блока "snapshot_sync" после последней строки в блоке "chain"
+  sed -i '/"wallet": {/,/}/{
+    /}/a\        "snapshot_sync": {\n          "sleep": 1.5,\n          "batch_size": 10000,\n          "starting_sub_id": 0,\n          "sync_period": 1\n        },
+  }' "$file"
 
   echo "Изменения применены к $file."
 }
