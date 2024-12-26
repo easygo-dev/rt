@@ -4,31 +4,37 @@
 CONFIG_FILE1=~/infernet-container-starter/deploy/config.json
 CONFIG_FILE2=~/infernet-container-starter/projects/hello-world/container/config.json
 
-# Функция для редактирования конфигурации
-edit_config_file() {
-  local file=$1
-  echo "Редактирую файл: $file"
+# Функция для исправления JSON
+fix_json() {
+    local file=$1
+    echo "Обрабатываю файл: $file"
 
-  # Удаление старого блока "snapshot_sync"
-  sed -i '/"snapshot_sync": {/,/}/d' "$file"
-
-  # Корректная вставка блока "snapshot_sync" после закрытия блока "wallet" и перед закрытием блока "chain"
-  awk '
-    BEGIN { inside_chain = 0 }
-    /"chain": {/ { inside_chain = 1 }
-    inside_chain && /"wallet": {/,/}/ { print; next } # Пропускаем блок "wallet"
-    inside_chain && /^\s*}/ && !printed { 
-      printed = 1; 
-      print "        \"snapshot_sync\": {\n          \"sleep\": 1.5,\n          \"batch_size\": 10000,\n          \"starting_sub_id\": 0,\n          \"sync_period\": 1\n        }," 
+    awk '
+    BEGIN { inside_wallet = 0 }
+    # Найти начало блока "wallet"
+    /"wallet": {/ { inside_wallet = 1 }
+    # Найти конец блока "wallet" и вставить "snapshot_sync" после него
+    inside_wallet && /^\s*}/ {
+        inside_wallet = 0
+        print
+        print "        \"snapshot_sync\": {"
+        print "          \"sleep\": 1.5,"
+        print "          \"batch_size\": 10000,"
+        print "          \"starting_sub_id\": 0,"
+        print "          \"sync_period\": 1"
+        print "        },"
+        next
     }
+    # Удалить старый блок "snapshot_sync", если он есть
+    !inside_wallet && /"snapshot_sync": {/,/}/ { next }
     { print }
-  ' "$file" > "${file}.tmp" && mv "${file}.tmp" "$file"
+    ' "$file" > "${file}.tmp" && mv "${file}.tmp" "$file"
 
-  echo "Изменения применены к $file."
+    echo "Изменения в $file завершены."
 }
 
-# Редактирование обоих файлов
-edit_config_file "$CONFIG_FILE1"
-edit_config_file "$CONFIG_FILE2"
+# Исправить оба файла
+fix_json "$CONFIG_FILE1"
+fix_json "$CONFIG_FILE2"
 
-echo "Все изменения успешно применены."
+echo "Исправления завершены."
