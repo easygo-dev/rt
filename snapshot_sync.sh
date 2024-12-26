@@ -22,7 +22,7 @@ fix_json() {
         print "          \"batch_size\": 10000,"
         print "          \"starting_sub_id\": 0,"
         print "          \"sync_period\": 1"
-        print "        },"
+        print "        }"
         next
     }
     # Удалить старый блок "snapshot_sync", если он есть
