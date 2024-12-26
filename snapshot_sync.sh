@@ -13,9 +13,12 @@ edit_config_file() {
   sed -i '/"snapshot_sync": {/,/}/d' "$file"
 
   # Вставка нового блока "snapshot_sync" перед закрывающей фигурной скобкой объекта "chain"
-  sed -i '/"chain": {/,/}/{
-    /}/i\        "snapshot_sync": {\n          "sleep": 1.5,\n          "batch_size": 10000,\n          "starting_sub_id": 0,\n          "sync_period": 1\n        },
-  }' "$file"
+  awk '
+    BEGIN { inside_chain = 0 }
+    /"chain": {/ { inside_chain = 1 }
+    inside_chain && /^\s*}/ { inside_chain = 0; print "        \"snapshot_sync\": {\n          \"sleep\": 1.5,\n          \"batch_size\": 10000,\n          \"starting_sub_id\": 0,\n          \"sync_period\": 1\n        }," }
+    { print }
+  ' "$file" > "${file}.tmp" && mv "${file}.tmp" "$file"
 
   echo "Изменения применены к $file."
 }
